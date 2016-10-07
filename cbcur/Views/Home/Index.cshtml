@@ -1,31 +1,62 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Currency exchange rate";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<div class="row">
+    <div class="col-md-10">
+        <script type="text/javascript">
+            @*@Html.Raw(String.Format("{0}", ViewBag.CurrencyGraph))*@
+            $(function () {
+                $('#curgraph').highcharts({
+                    title: {
+                        text: '@ViewBag.CurrencyTitle',
+                        x: -20 //center
+                    },
+                    subtitle: {
+                        text: 'Source: cbr.ru',
+                        x: -20
+                    },
+                    xAxis: {
+                        categories: ['@Html.Raw(String.Join("','", ViewBag.Days))'],
+                        title: {
+                            text: '@ViewBag.Month'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'rate'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    },
+                    tooltip: {
+                        valueSuffix: '@ViewBag.CurrencyTitle'
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    series: [{
+                        name: '@ViewBag.CurrencyTitle to Ruble',
+                        data: [@String.Join(",",ViewBag.CurrencyRates)]
+                    }]
+                });
+            });
+        </script>
+        <div id="curgraph" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="col-md-2">
+        @Html.DropDownList("CurrencyNames")
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="col-md-2">
+        @Html.DropDownList("Months")
     </div>
 </div>
