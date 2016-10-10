@@ -9,7 +9,7 @@
                 var containerID = "#curgraph"
                 $(containerID).highcharts({
                     title: {
-                        text: '@ViewBag.CurrencyTitle',
+                        text: '',
                         x: -20 //center
                     },
                     subtitle: {
@@ -17,9 +17,9 @@
                         x: -20
                     },
                     xAxis: {
-                        categories: ['@Html.Raw(String.Join("','", ViewBag.Days))'],
+                        categories: [],
                         title: {
-                            text: '@ViewBag.Month'
+                            text: ''
                         }
                     },
                     yAxis: {
@@ -43,7 +43,7 @@
                     },
                     series: [{
                         name: ' to Ruble',
-                        data: [@String.Join(",",ViewBag.CurrencyRates)]
+                        data: []
                     }]
                 });
             });
@@ -60,44 +60,3 @@
         @Html.DropDownList("Months")
     </div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('select').change(function () {
-            var containerID = '#curgraph';
-            var chart = $(containerID).highcharts();
-
-            var curSelected = "";
-            $("#CurrencyNames option:selected").each(function () {
-                curSelected += $(this)[0].value;
-            });
-            var monthSelected = "";
-            $("#Months option:selected").each(function () {
-                monthSelected += $(this)[0].value;
-            });
-
-            var chart_url = "/Home/UpdateChart";
-           
-            jsonData = JSON.stringify({Month:monthSelected, CurrencyCode:curSelected})
-            $.ajax({
-                type: "POST",
-                url: chart_url, 
-                data: jsonData,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: OnSuccess,
-                error: OnErrorCall
-            });
-   
-            function OnSuccess(response) {
-                //console.log(response);
-                chart.setTitle({ text: response.title });
-                chart.xAxis[0].setTitle({ text: response.month });
-                chart.xAxis[0].setCategories(response.days);
-                var rates = response.rates.map(function (item) { return parseFloat(item); });
-                chart.series[0].setData(rates, true, true, false);
-            }
-            function OnErrorCall(response) { console.log(response); }
-        });
-    });
-</script>

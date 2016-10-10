@@ -13,27 +13,16 @@ namespace cbcur.Controllers
     {
         public ActionResult Index()
         {
-            Tuple<DateTime, decimal>[] currencyrate = {Tuple.Create(DateTime.Today, (decimal)0)};
-
-            //ViewBag.CurrencyGraph = graph.GetGraph();
-            DateTime today = DateTime.Today;
-            var monthdayscount = DateTime.DaysInMonth(today.Year, today.Month);
-            string[] monthdays = new string[monthdayscount];
-            for (int k = 1; k <= monthdayscount; k++)
-                monthdays[k - 1] = k.ToString();
-            ViewBag.Days = monthdays;
             
-            //DataSet ds = cbcur.App_Start.CB.dailyInfo.EnumValutes(Seld: true);
-            List<SelectListItem> curnames = new List<SelectListItem>();
+            DateTime today = DateTime.Today;
 
+            List<SelectListItem> curnames = new List<SelectListItem>();
             foreach (var currency in App_Start.CB.CurrencyArray)
             {
                 // US Dollar as default
                 if (currency.Code == "R01235")
                 {
                     curnames.Add(new SelectListItem { Text = currency.Name, Value = currency.Code, Selected = true });
-                    ViewBag.CurrencyTitle = currency.Name;
-                    currencyrate = currency.GetRate(new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1), DateTime.Today);
                 }
                 else
                 {
@@ -55,19 +44,8 @@ namespace cbcur.Controllers
                     months.Add(new SelectListItem { Text = new DateTime(today.Year, i, 1).ToString("MMM"), Value = i.ToString() });
                 }
             }
-            
             ViewBag.Months = months;
-            ViewBag.Month = DateTime.Now.ToString("MMM");
-          
             
-            string[] rates = new string[currencyrate.Length];
-            for(int l=0;l<currencyrate.Length; l++)
-            {
-                if (currencyrate[l] != null)
-                    rates[l] = currencyrate[l].Item2.ToString().Replace(',','.');
-            }
-            ViewBag.CurrencyRates = rates;
-
             return View();
         }
 
