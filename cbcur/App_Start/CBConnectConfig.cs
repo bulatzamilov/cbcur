@@ -56,17 +56,11 @@ namespace cbcur.App_Start
             var days = (to - from).Days;
             Tuple<DateTime, decimal>[] res = new Tuple<DateTime, decimal>[31];
             DataSet dayrate = CB.dailyInfo.GetCursDynamic(from, to, Code);
-            for (int i = 0, j =0; i < days; i++, j++)
+            for (int i = 0; i < dayrate.Tables[0].Rows.Count; i++)
             {
-                var day = (DateTime)dayrate.Tables[0].Rows[j].ItemArray[0];
-                var rate = (decimal)dayrate.Tables[0].Rows[j].ItemArray[3];
-                res[i] = Tuple.Create(day, rate);
-                if (day.DayOfWeek == DayOfWeek.Saturday & i != days - 1)
-                {
-                    res[++i] = Tuple.Create(new DateTime(day.Year, day.Month, day.Day + 1), rate);
-                    if (i != days - 1)
-                        res[++i] = Tuple.Create(new DateTime(day.Year, day.Month, day.Day + 2), rate);
-                }
+                var day = (DateTime)dayrate.Tables[0].Rows[i].ItemArray[0];
+                var rate = (decimal)dayrate.Tables[0].Rows[i].ItemArray[3];
+                res[day.Day-1] = Tuple.Create(day, rate);
             }
             return res;
         }
